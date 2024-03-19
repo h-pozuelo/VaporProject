@@ -20,6 +20,8 @@ options.UseSqlServer(dbConnectionString)
 );
 
 
+// C2 modificacion 1
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
