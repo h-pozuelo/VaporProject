@@ -12,6 +12,7 @@ namespace WebAPI.Models
         public string? Descripcion { get; set; }
         [Display(Name = "Fecha de Lanzamiento")]
         public DateTime? FechaLanzamiento { get; set; }
+        public string? Imagen { get; set; }
         public decimal Precio { get; set; }
         [Display(Name = "Puntuación")]
         public double Puntuacion { get; set; }

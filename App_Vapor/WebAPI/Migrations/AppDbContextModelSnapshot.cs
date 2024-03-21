@@ -165,6 +165,12 @@ namespace WebAPI.Migrations
                     b.Property<int>("IdEditor")
                         .HasColumnType("int");
 
+                    b.Property<string>("Imagen")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<double>("Puntuacion")
                         .HasColumnType("float");
 

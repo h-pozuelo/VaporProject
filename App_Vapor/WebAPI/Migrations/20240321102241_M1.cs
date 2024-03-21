@@ -74,6 +74,8 @@ namespace WebAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaLanzamiento = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Imagen = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Precio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Puntuacion = table.Column<double>(type: "float", nullable: false),
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdDesarrollador = table.Column<int>(type: "int", nullable: false),

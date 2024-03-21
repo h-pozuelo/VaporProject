@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Context;
+using WebAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,12 @@ builder.Services.AddCors((options) =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.Initialize(services);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -40,6 +47,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors();
+app.UseCors(policyName: "MyPolicy");
 
 app.Run();

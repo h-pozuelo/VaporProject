@@ -12,7 +12,7 @@ using WebAPI.Context;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240320104617_M1")]
+    [Migration("20240321102241_M1")]
     partial class M1
     {
         /// <inheritdoc />
@@ -167,6 +167,12 @@ namespace WebAPI.Migrations
 
                     b.Property<int>("IdEditor")
                         .HasColumnType("int");
+
+                    b.Property<string>("Imagen")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<double>("Puntuacion")
                         .HasColumnType("float");
