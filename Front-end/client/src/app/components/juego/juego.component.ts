@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { IJuego } from '../../interfaces/juego';
 import { JuegosService } from '../../services/juegos.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../modules/material/material.module';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-juego',
   standalone: true,
-  imports: [MaterialModule, CommonModule],
+  imports: [MaterialModule, CommonModule, RouterModule],
   templateUrl: './juego.component.html',
   styleUrl: './juego.component.css',
 })

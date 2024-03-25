@@ -376,44 +376,50 @@ export class JuegosComponent implements OnInit {
 Dentro de **`./src/app/components/juegos/juegos.component.html`**
 
 ```
-<mat-form-field>
-  <mat-label>Buscar</mat-label>
-  <input
-    matInput
-    (keyup)="filtrar($event)"
-    placeholder="Ej. Counter-Strike"
-    #input
-  />
-</mat-form-field>
-
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" matSort>
-    @for (column of columns; track column) {
-    <ng-container [matColumnDef]="column.columnDef">
-      @if (column.columnDef!="image") {
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
-        {{ column.header }}
-      </th>
-      <td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
-      } @else {
-      <th mat-header-cell *matHeaderCellDef>{{ column.header }}</th>
-      <td mat-cell *matCellDef="let row">
-        <img
-          [src]="column.cell(row)"
-          class="img-fluid"
-          [alt]="column?.name(row)"
-          style="max-width: 184px"
+<div class="container container-fluid py-2">
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>Buscar</mat-label>
+        <input
+          matInput
+          (keyup)="filtrar($event)"
+          placeholder="Ej. Counter-Strike"
+          #input
         />
-      </td>
-      }
-    </ng-container>
-    }
+      </mat-form-field>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+          @for (column of columns; track column) {
+          <ng-container [matColumnDef]="column.columnDef">
+            @if (column.columnDef!="image") {
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ column.header }}
+            </th>
+            <td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
+            } @else {
+            <th mat-header-cell *matHeaderCellDef>{{ column.header }}</th>
+            <td mat-cell *matCellDef="let row">
+              <img
+                [src]="column.cell(row)"
+                class="img-fluid"
+                [alt]="column?.name(row)"
+                style="max-width: 184px"
+              />
+            </td>
+            }
+          </ng-container>
+          }
 
-  <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
 ```
 
@@ -436,17 +442,23 @@ export class JuegosComponent implements OnInit {
 Dentro de **`./src/app/components/juegos/juegos.component.html`**
 
 ```
-...
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" matSort class="table table-hover">
-    ...
-    <tr
-      mat-row
-      (click)="detalles(row.appid)"
-      *matRowDef="let row; columns: displayedColumns"
-    ></tr>
-  </table>
-  ...
+<div class="container container-fluid py-2">
+  <mat-card>
+    <mat-card-content>
+      ...
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+          ...
+          <tr
+            mat-row
+            (click)="detalles(row.appid)"
+            *matRowDef="let row; columns: displayedColumns"
+          ></tr>
+        </table>
+        ...
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
 ```
 
@@ -511,14 +523,14 @@ Dentro de **`./src/app/components/juego/juego.component.ts`**
 import { Component, OnInit } from '@angular/core';
 import { IJuego } from '../../interfaces/juego';
 import { JuegosService } from '../../services/juegos.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../modules/material/material.module';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-juego',
   standalone: true,
-  imports: [MaterialModule, CommonModule],
+  imports: [MaterialModule, CommonModule, RouterModule],
   templateUrl: './juego.component.html',
   styleUrl: './juego.component.css',
 })
@@ -575,76 +587,100 @@ export class JuegoComponent implements OnInit {
 Dentro de **`./src/app/components/juego/juego.component.html`**
 
 ```
-<mat-list *ngIf="juego">
-  <mat-list-item>
-    <span matListItemTitle>#</span>
-    <span matListItemLine>{{ juego.appid }}</span>
-  </mat-list-item>
+<div class="container container-fluid py-3">
+  <a mat-fab color="primary" [routerLink]="['/juegos']" class="mb-3">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
 
-  <mat-divider></mat-divider>
+  <mat-card *ngIf="juego">
+    <img
+      mat-card-image
+      [src]="
+        'https://cdn.akamai.steamstatic.com/steam/apps/' +
+        juego.appid +
+        '/header.jpg'
+      "
+      [alt]="juego.name"
+    />
 
-  <mat-list-item>
-    <span matListItemTitle>Juego</span>
-    <span matListItemLine>{{ juego.name }}</span>
-  </mat-list-item>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <span matListItemTitle>#</span>
+          <span matListItemLine>{{ juego.appid }}</span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Desarrollador</span>
-    <span matListItemLine>
-      @for (desarrollador of desarrolladores; let i = $index; let last = $last;
-      track i) { {{ desarrollador }}@if (!last) {,} }
-    </span>
-  </mat-list-item>
+        <mat-list-item>
+          <span matListItemTitle>Juego</span>
+          <span matListItemLine>{{ juego.name }}</span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Editor</span>
-    <span matListItemLine>
-      @for (editor of editores; let i = $index; let last = $last; track i) {
-      {{ editor }}@if (!last) {,} }
-    </span>
-  </mat-list-item>
+        <mat-list-item>
+          <span matListItemTitle>Desarrollador</span>
+          <span matListItemLine>
+            @for (desarrollador of desarrolladores; let i = $index; let last =
+            $last; track i) { {{ desarrollador }}@if (!last) {,} }
+          </span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Precio</span>
-    <span matListItemLine>{{ juego.price }}</span>
-  </mat-list-item>
+        <mat-list-item>
+          <span matListItemTitle>Editor</span>
+          <span matListItemLine>
+            @for (editor of editores; let i = $index; let last = $last; track i)
+            {
+            {{ editor }}@if (!last) {,} }
+          </span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Idiomas</span>
-    <span matListItemLine>
-      @for (idioma of idiomas; let i = $index; let last = $last; track i) {
-      {{ idioma }}@if (!last) {,} }
-    </span>
-  </mat-list-item>
+        <mat-list-item>
+          <span matListItemTitle>Precio</span>
+          <span matListItemLine>{{ juego.price }}</span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Género</span>
-    <span matListItemLine>
-      @for (genero of generos; let i = $index; let last = $last; track i) {
-      {{ genero }}@if (!last) {,} }
-    </span>
-  </mat-list-item>
+        <mat-list-item>
+          <span matListItemTitle>Idiomas</span>
+          <span matListItemLine>
+            @for (idioma of idiomas; let i = $index; let last = $last; track i)
+            {
+            {{ idioma }}@if (!last) {,} }
+          </span>
+        </mat-list-item>
 
-  <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-  <mat-list-item>
-    <span matListItemTitle>Etiquetas</span>
-    <span matListItemLine>
-      @for (etiqueta of etiquetas; let i = $index; let last = $last; track i) {
-      {{ etiqueta }}@if (!last) {,} }
-    </span>
-  </mat-list-item>
-</mat-list>
+        <mat-list-item>
+          <span matListItemTitle>Género</span>
+          <span matListItemLine>
+            @for (genero of generos; let i = $index; let last = $last; track i)
+            {
+            {{ genero }}@if (!last) {,} }
+          </span>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>
+          <span matListItemTitle>Etiquetas</span>
+          <span matListItemLine>
+            @for (etiqueta of etiquetas; let i = $index; let last = $last; track
+            i) {
+            {{ etiqueta }}@if (!last) {,} }
+          </span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>
 ```
 
 `ng generate component components/home --inline-style --inline-template`
@@ -715,9 +751,7 @@ Dentro de **`./src/app/components/menu/menu.component.ts`**
       <span>client</span>
     </mat-toolbar>
     <!-- Add Content Here -->
-    <div class="container container-fluid pt-3">
-      <router-outlet />
-    </div>
+    <router-outlet />
   </mat-sidenav-content>
 </mat-sidenav-container>
 ```
