@@ -3,11 +3,12 @@ import { IJuego } from '../../interfaces/juego';
 import { JuegosService } from '../../services/juegos.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MaterialModule } from '../../modules/material/material.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-juego',
   standalone: true,
-  imports: [MaterialModule],
+  imports: [MaterialModule, CommonModule],
   templateUrl: './juego.component.html',
   styleUrl: './juego.component.css',
 })

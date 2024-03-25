@@ -487,10 +487,257 @@ export const routes: Routes = [
 `"'https://cdn.akamai.steamstatic.com/steam/apps/'+juego.appid+'/header.jpg'"`
 `"'https://cdn.akamai.steamstatic.com/steam/apps/'+juego.appid+'/hero_capsule.jpg'"`
 
+Dentro de **`./src/app/modules/material/material.module.ts`**
+
+```
+...
+import { MatListModule } from '@angular/material/list';
+
+@NgModule({
+  ...,
+  exports: [
+    ...,
+    MatListModule,
+  ],
+})
+...
+```
+
 `ng generate component components/juego --inline-style --inline-template`
 
 Dentro de **`./src/app/components/juego/juego.component.ts`**
 
 ```
+import { Component, OnInit } from '@angular/core';
+import { IJuego } from '../../interfaces/juego';
+import { JuegosService } from '../../services/juegos.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MaterialModule } from '../../modules/material/material.module';
+import { CommonModule } from '@angular/common';
 
+@Component({
+  selector: 'app-juego',
+  standalone: true,
+  imports: [MaterialModule, CommonModule],
+  templateUrl: './juego.component.html',
+  styleUrl: './juego.component.css',
+})
+export class JuegoComponent implements OnInit {
+  public appid!: number;
+  public juego!: IJuego;
+  public desarrolladores: string[] = [];
+  public editores: string[] = [];
+  public idiomas: string[] = [];
+  public generos: string[] = [];
+  public etiquetas: string[] = [];
+
+  constructor(
+    private juegosService: JuegosService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.getJuego();
+  }
+
+  getJuego(): void {
+    this.activatedRoute.params.subscribe({
+      next: (data) => {
+        this.appid = data['appid'];
+
+        if (!isNaN(this.appid)) {
+          this.juegosService.getJuego(this.appid).subscribe({
+            next: (data) => {
+              this.juego = data;
+              this.desarrolladores = this.juego.developer.split(',');
+              this.editores = this.juego.publisher.split(',');
+              this.idiomas = (this.juego.languages ?? '').split(',');
+              this.generos = (this.juego.genre ?? '').split(',');
+              this.etiquetas = Object.keys(this.juego.tags ?? {});
+            },
+            error: (error) => {
+              console.error(error);
+              this.router.navigate(['/juegos']);
+            },
+          });
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.router.navigate(['/juegos']);
+      },
+    });
+  }
+}
+```
+
+Dentro de **`./src/app/components/juego/juego.component.html`**
+
+```
+<mat-list *ngIf="juego">
+  <mat-list-item>
+    <span matListItemTitle>#</span>
+    <span matListItemLine>{{ juego.appid }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Juego</span>
+    <span matListItemLine>{{ juego.name }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Desarrollador</span>
+    <span matListItemLine>
+      @for (desarrollador of desarrolladores; let i = $index; let last = $last;
+      track i) { {{ desarrollador }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Editor</span>
+    <span matListItemLine>
+      @for (editor of editores; let i = $index; let last = $last; track i) {
+      {{ editor }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Precio</span>
+    <span matListItemLine>{{ juego.price }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Idiomas</span>
+    <span matListItemLine>
+      @for (idioma of idiomas; let i = $index; let last = $last; track i) {
+      {{ idioma }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Género</span>
+    <span matListItemLine>
+      @for (genero of generos; let i = $index; let last = $last; track i) {
+      {{ genero }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Etiquetas</span>
+    <span matListItemLine>
+      @for (etiqueta of etiquetas; let i = $index; let last = $last; track i) {
+      {{ etiqueta }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+</mat-list>
+```
+
+`ng generate component components/home --inline-style --inline-template`
+
+Dentro de **`./src/app/app.routes.ts`**
+
+```
+...
+export const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./components/home/home.component').then((m) => m.HomeComponent),
+  },
+  ...
+];
+```
+
+`ng generate @angular/material:navigation components/menu --inline-style --inline-template`
+
+Dentro de **`./src/app/components/menu/menu.component.ts`**
+
+```
+...
+import { RouterModule } from '@angular/router';
+
+@Component({
+  ...,
+  imports: [
+    ...,
+    RouterModule,
+  ],
+})
+...
+```
+
+Dentro de **`./src/app/components/menu/menu.component.ts`**
+
+```
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/']">Inicio</a>
+      <a mat-list-item [routerLink]="['/juegos']">Juegos</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      @if (isHandset$ | async) {
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      }
+      <span>client</span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <div class="container container-fluid pt-3">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+```
+
+Dentro de **`./src/app/app.component.ts`**
+
+```
+...
+import { MenuComponent } from './components/menu/menu.component';
+
+@Component({
+  ...,
+  imports: [RouterOutlet, MenuComponent],
+  ...,
+})
+...
+```
+
+Dentro de **`./src/app/app.component.html`**
+
+```
+<app-menu></app-menu>
 ```

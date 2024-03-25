@@ -1,0 +1,70 @@
+<mat-list *ngIf="juego">
+  <mat-list-item>
+    <span matListItemTitle>#</span>
+    <span matListItemLine>{{ juego.appid }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Juego</span>
+    <span matListItemLine>{{ juego.name }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Desarrollador</span>
+    <span matListItemLine>
+      @for (desarrollador of desarrolladores; let i = $index; let last = $last;
+      track i) { {{ desarrollador }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Editor</span>
+    <span matListItemLine>
+      @for (editor of editores; let i = $index; let last = $last; track i) {
+      {{ editor }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Precio</span>
+    <span matListItemLine>{{ juego.price }}</span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Idiomas</span>
+    <span matListItemLine>
+      @for (idioma of idiomas; let i = $index; let last = $last; track i) {
+      {{ idioma }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Género</span>
+    <span matListItemLine>
+      @for (genero of generos; let i = $index; let last = $last; track i) {
+      {{ genero }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item>
+    <span matListItemTitle>Etiquetas</span>
+    <span matListItemLine>
+      @for (etiqueta of etiquetas; let i = $index; let last = $last; track i) {
+      {{ etiqueta }}@if (!last) {,} }
+    </span>
+  </mat-list-item>
+</mat-list>

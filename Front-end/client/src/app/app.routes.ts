@@ -4,7 +4,8 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/juegos',
+    loadComponent: () =>
+      import('./components/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'juegos',
