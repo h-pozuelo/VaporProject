@@ -1,0 +1,5 @@
+@if (juegoResults$ | async; as resultObject) {
+<app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
+} @if(errorMessage){
+<p>{{ errorMessage }}</p>
+}

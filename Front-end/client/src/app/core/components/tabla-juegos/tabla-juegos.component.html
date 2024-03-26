@@ -5,17 +5,23 @@
         <mat-label>Buscar</mat-label>
         <input
           matInput
-          (keyup)="filtrar($event)"
+          (keyup)="applyFilter($event)"
           placeholder="Ej. Counter-Strike"
           #input
         />
       </mat-form-field>
 
-      <section tabindex="0">
-        <table mat-table [dataSource]="dataSource" matSort>
+      <div class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          class="full-width-table"
+          matSort
+          aria-label="Juegos"
+        >
           @for (column of columns; track column) {
           <ng-container [matColumnDef]="column.columnDef">
-            @if (column.columnDef!="image") {
+            @if (column.columnDef != "capsule") {
             <th mat-header-cell *matHeaderCellDef mat-sort-header>
               {{ column.header }}
             </th>
@@ -37,17 +43,22 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr
             mat-row
-            (click)="detalles(row.appid)"
+            (click)="detallesJuego(row.appid)"
             *matRowDef="let row; columns: displayedColumns"
           ></tr>
         </table>
 
         <mat-paginator
+          #paginator
+          [length]="dataSource.data.length"
+          [pageIndex]="0"
           [pageSize]="10"
           [pageSizeOptions]="[5, 10, 20]"
           showFirstLastButtons
-        ></mat-paginator>
-      </section>
+          aria-label="Selecciona una página"
+        >
+        </mat-paginator>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

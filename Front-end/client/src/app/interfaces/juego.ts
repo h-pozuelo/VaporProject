@@ -1,3 +1,7 @@
+export interface IEtiqueta {
+  [key: string]: number;
+}
+
 export interface IJuego {
   appid: number;
   name: string;
@@ -18,5 +22,9 @@ export interface IJuego {
   ccu: number;
   languages?: string;
   genre?: string;
-  tags?: Object;
+  tags?: IEtiqueta;
+}
+
+export interface IJuegoResults {
+  [key: string]: IJuego;
 }

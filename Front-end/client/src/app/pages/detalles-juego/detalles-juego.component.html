@@ -1,81 +1,69 @@
+@if (juego$ | async; as resultObject) {
 <div class="container container-fluid py-3">
-  <a mat-fab color="primary" [routerLink]="['/juegos']" class="mb-3">
+  <a mat-fab color="primary" routerLink="/lista-juegos" class="mb-3">
     <mat-icon>arrow_back</mat-icon>
   </a>
 
-  <mat-card *ngIf="juego">
+  <mat-card>
     <img
       mat-card-image
       [src]="
         'https://cdn.akamai.steamstatic.com/steam/apps/' +
-        juego.appid +
+        resultObject.appid +
         '/header.jpg'
       "
-      [alt]="juego.name"
+      [alt]="resultObject.name"
     />
 
     <mat-card-content>
       <mat-list>
         <mat-list-item>
           <span matListItemTitle>#</span>
-          <span matListItemLine>{{ juego.appid }}</span>
+          <span matListItemLine>{{ resultObject.appid }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Juego</span>
-          <span matListItemLine>{{ juego.name }}</span>
+          <span matListItemLine>{{ resultObject.name }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Desarrollador</span>
-          <span matListItemLine>
-            @for (desarrollador of desarrolladores; let i = $index; let last =
-            $last; track i) { {{ desarrollador }}@if (!last) {,} }
-          </span>
+          <span matListItemLine>{{ resultObject.developer }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Editor</span>
-          <span matListItemLine>
-            @for (editor of editores; let i = $index; let last = $last; track i)
-            {
-            {{ editor }}@if (!last) {,} }
-          </span>
+          <span matListItemLine>{{ resultObject.publisher }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Precio</span>
-          <span matListItemLine>{{ juego.price }}</span>
+          <span matListItemLine>{{
+            resultObject.price | price | currency : "USD" : "symbol"
+          }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Idiomas</span>
-          <span matListItemLine>
-            @for (idioma of idiomas; let i = $index; let last = $last; track i)
-            {
-            {{ idioma }}@if (!last) {,} }
-          </span>
+          <span matListItemLine>{{ resultObject.languages }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
 
         <mat-list-item>
           <span matListItemTitle>Género</span>
-          <span matListItemLine>
-            @for (genero of generos; let i = $index; let last = $last; track i)
-            {
-            {{ genero }}@if (!last) {,} }
-          </span>
+          <span matListItemLine>{{ resultObject.genre }}</span>
         </mat-list-item>
 
         <mat-divider></mat-divider>
@@ -83,12 +71,14 @@
         <mat-list-item>
           <span matListItemTitle>Etiquetas</span>
           <span matListItemLine>
-            @for (etiqueta of etiquetas; let i = $index; let last = $last; track
-            i) {
-            {{ etiqueta }}@if (!last) {,} }
+            @for (etiqueta of resultObject.tags | keyvalue; track etiqueta.key)
+            { {{ etiqueta.key }}@if(!$last) {,} }
           </span>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>
 </div>
+} @if(errorMessage){
+<p>{{ errorMessage }}</p>
+}

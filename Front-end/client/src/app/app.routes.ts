@@ -5,23 +5,23 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     loadComponent: () =>
-      import('./components/home/home.component').then((m) => m.HomeComponent),
+      import('./pages/home/home.component').then((m) => m.HomeComponent),
   },
   {
-    path: 'juegos',
+    path: 'lista-juegos',
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./components/juegos/juegos.component').then(
-            (m) => m.JuegosComponent
+          import('./pages/lista-juegos/lista-juegos.component').then(
+            (m) => m.ListaJuegosComponent
           ),
       },
       {
-        path: ':appid',
+        path: 'detalles-juego/:id',
         loadComponent: () =>
-          import('./components/juego/juego.component').then(
-            (m) => m.JuegoComponent
+          import('./pages/detalles-juego/detalles-juego.component').then(
+            (m) => m.DetallesJuegoComponent
           ),
       },
     ],

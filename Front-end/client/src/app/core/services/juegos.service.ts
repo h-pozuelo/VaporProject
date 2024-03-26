@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IJuego } from '../interfaces/juego';
+import { IJuego, IJuegoResults } from '../../interfaces/juego';
 
 const URL: string = '/steamspy';
 
@@ -11,8 +11,8 @@ const URL: string = '/steamspy';
 export class JuegosService {
   constructor(private http: HttpClient) {}
 
-  getJuegos(): Observable<Object> {
-    return this.http.get<Object>(URL, {
+  getAllJuegos(): Observable<IJuegoResults> {
+    return this.http.get<IJuegoResults>(URL, {
       params: new HttpParams().set('request', 'top100in2weeks'),
     });
   }
