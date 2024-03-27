@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Context;
-using WebAPI.Models;
+using Server.Context;
+using Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +12,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>((options) =>
+builder.Services.AddDbContext<ApplicationDbContext>((options) =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddIdentity<Usuario, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddCors((options) =>
 {
@@ -28,15 +32,11 @@ builder.Services.AddCors((options) =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    SeedData.Initialize(services);
-}
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    var db = app.Services.CreateScope().ServiceProvider.GetService<ApplicationDbContext>();
+    db?.Database.EnsureCreated();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
