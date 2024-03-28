@@ -1,9 +1,9 @@
-@if (juego$ | async; as resultObject) {
 <div class="container container-fluid py-3">
   <a mat-fab color="primary" routerLink="/lista-juegos" class="mb-3">
     <mat-icon>arrow_back</mat-icon>
   </a>
 
+  @if (juego$ | async; as resultObject) {
   <mat-card>
     <img
       mat-card-image
@@ -70,15 +70,15 @@
 
         <mat-list-item>
           <span matListItemTitle>Etiquetas</span>
-          <span matListItemLine>
-            @for (etiqueta of resultObject.tags | keyvalue; track etiqueta.key)
-            { {{ etiqueta.key }}@if(!$last) {,} }
-          </span>
+          <span matListItemLine
+            >@for (etiqueta of resultObject.tags | keyvalue; track etiqueta.key)
+            { {{ etiqueta.key }}@if (!$last) {,} }</span
+          >
         </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>
+  } @if (errorMessage) {
+  <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  }
 </div>
-} @if(errorMessage){
-<p>{{ errorMessage }}</p>
-}

@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { PricePipe } from '../../core/pipes/price.pipe';
+import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
 
 @Component({
   selector: 'app-detalles-juego',
@@ -23,6 +24,7 @@ import { PricePipe } from '../../core/pipes/price.pipe';
     MatListModule,
     PricePipe,
     CurrencyPipe,
+    MensajeErrorComponent,
   ],
   templateUrl: './detalles-juego.component.html',
   styleUrl: './detalles-juego.component.css',

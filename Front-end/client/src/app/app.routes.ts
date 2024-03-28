@@ -27,6 +27,13 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'registrar-usuario',
+    loadComponent: () =>
+      import('./pages/registrar-usuario/registrar-usuario.component').then(
+        (m) => m.RegistrarUsuarioComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: '/',
   },

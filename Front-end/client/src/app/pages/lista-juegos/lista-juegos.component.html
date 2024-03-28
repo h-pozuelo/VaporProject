@@ -1,5 +1,7 @@
-@if (juegoResults$ | async; as resultObject) {
-<app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
-} @if(errorMessage){
-<p>{{ errorMessage }}</p>
-}
+<div class="container container-fluid py-3">
+  @if (juegoResults$ | async; as resultObject) {
+  <app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
+  } @if (errorMessage) {
+  <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  }
+</div>

@@ -1,0 +1,123 @@
+<div class="container container-fluid py-3">
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  }
+
+  <form
+    [formGroup]="formulario"
+    autocomplete="off"
+    novalidate
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title></mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Nombre Completo</mat-label>
+              <input matInput type="text" formControlName="fullName" />
+              @if (validateControl('fullName') && hasError('fullName',
+              'required')) {
+              <mat-error
+                >Nombre Completo es <strong>requerido</strong></mat-error
+              >
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" />
+              @if (validateControl('email') && hasError('email', 'required')) {
+              <mat-error>Email es <strong>requerido</strong></mat-error>
+              } @if (validateControl('email') && hasError('email', 'email')) {
+              <mat-error>Email no es <strong>válido</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hide ? 'password' : 'text'"
+                formControlName="password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hide = !hide"
+                [attr.aria-label]="'Ocultar contraseña'"
+                [attr.aria-pressed]="hide"
+              >
+                <mat-icon>{{
+                  hide ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              @if (validateControl('password') && hasError('password',
+              'required')) {
+              <mat-error>Contraseña es <strong>requerida</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Confirmar Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hideConfirm ? 'password' : 'text'"
+                formControlName="confirmPassword"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hideConfirm = !hideConfirm"
+                [attr.aria-label]="'Ocultar contraseña'"
+                [attr.aria-pressed]="hideConfirm"
+              >
+                <mat-icon>{{
+                  hideConfirm ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="px-3 pb-3" align="end">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!formulario.valid"
+        >
+          Registrarse
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="onReset()"
+          class="ms-2"
+        >
+          Limpiar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

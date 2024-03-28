@@ -277,3 +277,127 @@ builder.Services.AddCors((options) =>
 app.UseCors(policyName: "MyPolicy");
 ...
 ```
+
+## [28/03/2024]
+
+### Configuración del registro de usuarios
+
+Crear el fichero **`./DataTransferObjects/UserForRegistrationDto.cs`**
+
+Dentro de **`./DataTransferObjects/UserForRegistrationDto.cs`**
+
+```
+using System.ComponentModel.DataAnnotations;
+
+namespace Server.DataTransferObjects
+{
+    public class UserForRegistrationDto
+    {
+        [Required(ErrorMessage = "FullName is required.")]
+        public string? FullName { get; set; }
+        [Required(ErrorMessage = "Email is required.")]
+        public string? Email { get; set; }
+        [Required(ErrorMessage = "Password is required.")]
+        public string? Password { get; set; }
+        [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+        public string? ConfirmPassword { get; set; }
+    }
+
+    public class RegistrationResponseDto
+    {
+        public bool IsSuccessfulRegistration { get; set; }
+        public IEnumerable<string>? Errors { get; set; }
+    }
+}
+```
+
+Instalar el paquete NuGet **`AutoMapper`**
+
+Crear el fichero **`./Controllers/AccountsController.cs`**
+
+Dentro de **`./Controllers/AccountsController.cs`**
+
+```
+using AutoMapper;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Server.DataTransferObjects;
+using Server.Models;
+
+namespace Server.Controllers
+{
+    [EnableCors(policyName: "MyPolicy")]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountsController : ControllerBase
+    {
+        private readonly UserManager<Usuario> _userManager;
+        private readonly IMapper _mapper;
+
+        public AccountsController(UserManager<Usuario> userManager, IMapper mapper)
+        {
+            _userManager = userManager;
+            _mapper = mapper;
+        }
+
+        [HttpPost("Registration")]
+        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistrationDto)
+        {
+            if (userForRegistrationDto == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = _mapper.Map<Usuario>(userForRegistrationDto);
+
+            var result = await _userManager.CreateAsync(user, userForRegistrationDto.Password);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select((e) => e.Description);
+
+                return BadRequest(new RegistrationResponseDto { Errors = errors });
+            }
+
+            return StatusCode(201);
+        }
+    }
+}
+```
+
+Crear el fichero **`./MappingProfile.cs`**
+
+Dentro de **`./MappingProfile.cs`**
+
+```
+using AutoMapper;
+using Server.DataTransferObjects;
+using Server.Models;
+
+namespace Server
+{
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<UserForRegistrationDto, Usuario>()
+                .ForMember((u) => u.NomApels, (opt) => opt.MapFrom((x) => x.FullName))
+                .ForMember((u) => u.UserName, (opt) => opt.MapFrom((x) => x.Email));
+        }
+    }
+}
+```
+
+Dentro de **`./Program.cs`**
+
+```
+...
+using Server;
+...
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+...
+```
+
+Continuar en el **`client`**

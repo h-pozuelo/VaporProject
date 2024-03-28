@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Server;
 using Server.Context;
 using Server.Models;
 
@@ -29,6 +30,8 @@ builder.Services.AddCors((options) =>
             builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
         });
 });
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

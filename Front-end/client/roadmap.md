@@ -822,3 +822,328 @@ export class PricePipe implements PipeTransform {
   }
 }
 ```
+
+## [28/03/2024]
+
+`ng generate interface interfaces/user-for-registration-dto`
+
+Dentro de **`./src/app/interfaces/user-for-registration-dto.ts`**
+
+```
+export interface UserForRegistrationDto {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface RegistrationResponse {
+  isSuccessfulRegistration: boolean;
+  errors: string[];
+}
+```
+
+`ng generate service core/services/authentication`
+
+Dentro de **`./src/app/core/services/juegos.service.ts`**
+
+```
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {
+  RegistrationResponse,
+  UserForRegistrationDto,
+} from '../../interfaces/user-for-registration-dto';
+import { Observable } from 'rxjs';
+
+const URL: string = 'https://localhost:7280';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthenticationService {
+  constructor(private http: HttpClient) {}
+
+  registerUser(
+    usuario: UserForRegistrationDto
+  ): Observable<RegistrationResponse> {
+    return this.http.post<RegistrationResponse>(
+      `${URL}/api/Accounts/Registration`,
+      usuario
+    );
+  }
+}
+```
+
+`ng generate component pages/registrar-usuario`
+
+Dentro de **`./src/app/app.routes.ts`**
+
+```
+...
+export const routes: Routes = [
+  ...,
+  {
+    path: 'registrar-usuario',
+    loadComponent: () =>
+      import('./pages/registrar-usuario/registrar-usuario.component').then(
+        (m) => m.RegistrarUsuarioComponent
+      ),
+  },
+  ...,
+];
+```
+
+Dentro de **`./src/app/pages/registrar-usuario/registrar-usuario.component.ts`**
+
+```
+import { Component, OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { AuthenticationService } from '../../core/services/authentication.service';
+import { UserForRegistrationDto } from '../../interfaces/user-for-registration-dto';
+import { EMPTY, catchError, take } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
+
+@Component({
+  selector: 'app-registrar-usuario',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MensajeErrorComponent,
+  ],
+  templateUrl: './registrar-usuario.component.html',
+  styleUrl: './registrar-usuario.component.css',
+})
+export class RegistrarUsuarioComponent implements OnInit {
+  public formulario!: FormGroup;
+  public errorMessage!: string;
+  public hide: boolean = true;
+  public hideConfirm: boolean = true;
+
+  constructor(private authenticationService: AuthenticationService) {}
+
+  ngOnInit(): void {
+    this.formulario = new FormGroup({
+      fullName: new FormControl('', { validators: Validators.required }),
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: new FormControl('', { validators: Validators.required }),
+      confirmPassword: new FormControl(''),
+    });
+  }
+
+  /**
+   *
+   * @param controlName Nombre asignado al control de formulario a través del atributo "formControlName"
+   * @returns Valor booleano que indica si el control de formulario no es válido
+   */
+  validateControl(controlName: string): boolean {
+    let control = this.formulario.controls[controlName];
+    return control.invalid && control.touched;
+  }
+
+  /**
+   *
+   * @param controlName Nombre asignado al control de formulario a través del atributo "formControl"
+   * @param errorName Nombre de la validación asignada al control de formulario al momento de crearlo usando la clase "FormControl"
+   * @returns Valor booleano que indica si el control de formulario posee errores de validación
+   */
+  hasError(controlName: string, errorName: string): boolean {
+    let control = this.formulario.controls[controlName];
+    return control.hasError(errorName);
+  }
+
+  onSubmit() {
+    const formValues = this.formulario.value;
+    const usuario: UserForRegistrationDto = {
+      fullName: formValues.fullName,
+      email: formValues.email,
+      password: formValues.password,
+      confirmPassword: formValues.confirmPassword,
+    };
+
+    this.errorMessage = '';
+
+    this.authenticationService
+      .registerUser(usuario)
+      .pipe(
+        take(1),
+        catchError((error: string) => {
+          this.errorMessage = error;
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (_) => {
+          console.log('Successful registration');
+        },
+      });
+  }
+
+  onReset() {
+    this.formulario.reset();
+    this.errorMessage = '';
+    this.hide = true;
+    this.hideConfirm = true;
+  }
+}
+```
+
+Dentro de **`./src/app/pages/registrar-usuario/registrar-usuario.component.html`**
+
+```
+<div class="container container-fluid py-3">
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  }
+
+  <form
+    [formGroup]="formulario"
+    autocomplete="off"
+    novalidate
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title></mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Nombre Completo</mat-label>
+              <input matInput type="text" formControlName="fullName" />
+              @if (validateControl('fullName') && hasError('fullName',
+              'required')) {
+              <mat-error
+                >Nombre Completo es <strong>requerido</strong></mat-error
+              >
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" />
+              @if (validateControl('email') && hasError('email', 'required')) {
+              <mat-error>Email es <strong>requerido</strong></mat-error>
+              } @if (validateControl('email') && hasError('email', 'email')) {
+              <mat-error>Email no es <strong>válido</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hide ? 'password' : 'text'"
+                formControlName="password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hide = !hide"
+                [attr.aria-label]="'Ocultar contraseña'"
+                [attr.aria-pressed]="hide"
+              >
+                <mat-icon>{{
+                  hide ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              @if (validateControl('password') && hasError('password',
+              'required')) {
+              <mat-error>Contraseña es <strong>requerida</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Confirmar Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hideConfirm ? 'password' : 'text'"
+                formControlName="confirmPassword"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hideConfirm = !hideConfirm"
+                [attr.aria-label]="'Ocultar contraseña'"
+                [attr.aria-pressed]="hideConfirm"
+              >
+                <mat-icon>{{
+                  hideConfirm ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="px-3 pb-3" align="end">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!formulario.valid"
+        >
+          Registrarse
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="onReset()"
+          class="ms-2"
+        >
+          Limpiar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+```
+
+Dentro de **`./src/app/core/components/menu/menu.component.html`**
+
+```
+<mat-sidenav-container class="sidenav-container">
+  ...
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      ...
+      <a mat-icon-button routerLink="/registrar-usuario">
+        <mat-icon>account_circle</mat-icon>
+      </a>
+    </mat-toolbar>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>
+```
