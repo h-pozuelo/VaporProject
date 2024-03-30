@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
+import { PasswordConfirmationValidatorService } from '../../core/services/password-confirmation-validator.service';
 
 @Component({
   selector: 'app-registrar-usuario',
@@ -34,7 +35,10 @@ export class RegistrarUsuarioComponent implements OnInit {
   public hide: boolean = true;
   public hideConfirm: boolean = true;
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(
+    private authenticationService: AuthenticationService,
+    private passConfValidator: PasswordConfirmationValidatorService
+  ) {}
 
   ngOnInit(): void {
     this.formulario = new FormGroup({
@@ -45,6 +49,13 @@ export class RegistrarUsuarioComponent implements OnInit {
       password: new FormControl('', { validators: Validators.required }),
       confirmPassword: new FormControl(''),
     });
+
+    this.formulario.controls['confirmPassword'].setValidators([
+      Validators.required,
+      this.passConfValidator.validateConfirmPassword(
+        this.formulario.controls['password']
+      ),
+    ]);
   }
 
   /**

@@ -11,7 +11,13 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.error instanceof ErrorEvent) {
         errorMessage = `Error: ${error.error.message}`;
       } else {
-        errorMessage = `Error code: ${error.status}, message: ${error.message}`;
+        if (error.status === 400) {
+          Object.values(error.error.errors).map((m) => {
+            errorMessage += `${m}<br />`;
+          });
+        } else {
+          errorMessage = `Error code: ${error.status}, message: ${error.message}`;
+        }
       }
 
       return throwError(() => errorMessage);

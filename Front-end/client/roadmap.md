@@ -1131,6 +1131,22 @@ Dentro de **`./src/app/pages/registrar-usuario/registrar-usuario.component.html`
 </div>
 ```
 
+Dentro de **`./src/app/core/components/menu/menu.component.ts`**
+
+```
+...
+import { MatMenuModule } from '@angular/material/menu';
+
+@Component({
+  ...
+  imports: [
+    ...,
+    MatMenuModule,
+  ],
+})
+...
+```
+
 Dentro de **`./src/app/core/components/menu/menu.component.html`**
 
 ```
@@ -1139,11 +1155,144 @@ Dentro de **`./src/app/core/components/menu/menu.component.html`**
   <mat-sidenav-content>
     <mat-toolbar color="primary">
       ...
-      <a mat-icon-button routerLink="/registrar-usuario">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>account_circle</mat-icon>
-      </a>
+      </button>
+      <mat-menu #menu="matMenu">
+        <a mat-menu-item routerLink="/registrar-usuario">
+          <mat-icon>login</mat-icon>
+          <span>Registrarse</span>
+        </a>
+      </mat-menu>
     </mat-toolbar>
-    <router-outlet />
+    ...
   </mat-sidenav-content>
 </mat-sidenav-container>
 ```
+
+## [29/03/2024]
+
+`ng generate service core/services/password-confirmation-validator`
+
+Dentro de **`./src/app/core/services/password-confirmation-validator.service.ts`**
+
+```
+import { Injectable } from '@angular/core';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PasswordConfirmationValidatorService {
+  constructor() {}
+
+  validateConfirmPassword(passwordControl: AbstractControl): ValidatorFn {
+    return (
+      confirmationControl: AbstractControl
+    ): { [key: string]: boolean } | null => {
+      const confirmValue = confirmationControl.value;
+      const passwordValue = passwordControl.value;
+
+      if (confirmValue !== passwordValue) {
+        return { mustMatch: true };
+      }
+
+      return null;
+    };
+  }
+}
+```
+
+Dentro de **`./src/app/pages/registrar-usuario/registrar-usuario.component.ts`**
+
+```
+...
+import { PasswordConfirmationValidatorService } from '../../core/services/password-confirmation-validator.service';
+...
+export class RegistrarUsuarioComponent implements OnInit {
+  ...
+  constructor(
+    private authenticationService: AuthenticationService,
+    private passConfValidator: PasswordConfirmationValidatorService
+  ) {}
+
+  ngOnInit(): void {
+    ...
+    this.formulario.controls['confirmPassword'].setValidators([
+      Validators.required,
+      this.passConfValidator.validateConfirmPassword(
+        this.formulario.controls['password']
+      ),
+    ]);
+  }
+  ...
+}
+```
+
+Dentro de **`./src/app/pages/registrar-usuario/registrar-usuario.component.html`**
+
+```
+<div class="container container-fluid py-3">
+  ...
+  <form
+    [formGroup]="formulario"
+    autocomplete="off"
+    novalidate
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-card>
+      ...
+      <mat-card-content>
+        ...
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              ...
+              @if (validateControl('confirmPassword') &&
+              hasError('confirmPassword', 'required')) {
+              <mat-error
+                >Confirmar Contraseña es <strong>requerido</strong></mat-error
+              >
+              } @if (hasError('confirmPassword', 'mustMatch')) {
+              <mat-error
+                >Las contraseñas no <strong>coinciden</strong></mat-error
+              >
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      ...
+    </mat-card>
+  </form>
+</div>
+```
+
+Dentro de **`./src/app/core/interceptors/error-handler.interceptor.ts`**
+
+```
+...
+export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
+  // Agregando manejo de errores
+  // Con el 'pipe' visualizamos lo que hay en el torrente del 'Observable' sin suscribirnos
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      ...
+      if (error.error instanceof ErrorEvent) {
+        ...
+      } else {
+        if (error.status === 400) {
+          Object.values(error.error.errors).map((m) => {
+            errorMessage += `${m}<br />`;
+          });
+        } else {
+          errorMessage = `Error code: ${error.status}, message: ${error.message}`;
+        }
+      }
+      ...
+    })
+  );
+};
+```
+
+Continuar en el **`Server`**

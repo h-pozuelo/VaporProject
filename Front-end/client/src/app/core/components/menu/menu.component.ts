@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-menu',
@@ -23,6 +24,7 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     AsyncPipe,
     RouterModule,
+    MatMenuModule,
   ],
 })
 export class MenuComponent {

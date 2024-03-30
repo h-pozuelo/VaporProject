@@ -94,6 +94,16 @@
                   hideConfirm ? "visibility_off" : "visibility"
                 }}</mat-icon>
               </button>
+              @if (validateControl('confirmPassword') &&
+              hasError('confirmPassword', 'required')) {
+              <mat-error
+                >Confirmar Contraseña es <strong>requerido</strong></mat-error
+              >
+              } @if (hasError('confirmPassword', 'mustMatch')) {
+              <mat-error
+                >Las contraseñas no <strong>coinciden</strong></mat-error
+              >
+              }
             </mat-form-field>
           </div>
         </div>

@@ -27,9 +27,15 @@
       }
       <span>client</span>
       <span class="example-spacer"></span>
-      <a mat-icon-button routerLink="/registrar-usuario">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>account_circle</mat-icon>
-      </a>
+      </button>
+      <mat-menu #menu="matMenu">
+        <a mat-menu-item routerLink="/registrar-usuario">
+          <mat-icon>login</mat-icon>
+          <span>Registrarse</span>
+        </a>
+      </mat-menu>
     </mat-toolbar>
     <router-outlet />
   </mat-sidenav-content>
