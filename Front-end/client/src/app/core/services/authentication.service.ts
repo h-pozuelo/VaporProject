@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import {
   RegistrationResponse,
   UserForRegistrationDto,
+UserForAuthenticationDto,
+AuthResponseDto
 } from '../../interfaces/user-for-registration-dto';
 import { Observable } from 'rxjs';
 
@@ -22,4 +24,14 @@ export class AuthenticationService {
       usuario
     );
   }
+
+// servicio para el login
+  loginUser(usuario: UserForAuthenticationDto): Observable<AuthResponseDto> {
+    
+    return this.http.post<AuthResponseDto>(
+      `${URL}/api/Accounts/Login`,
+      usuario
+    );
+  }
+  
 }

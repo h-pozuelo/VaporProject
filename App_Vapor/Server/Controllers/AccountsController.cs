@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Server.DataTransferObjects;
+using Server.JwtFeatures;
 using Server.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Server.Controllers
 {
@@ -15,11 +19,13 @@ namespace Server.Controllers
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly IMapper _mapper;
+        private readonly JwtHandler _jwtHandler;
 
-        public AccountsController(UserManager<Usuario> userManager, IMapper mapper)
+        public AccountsController(UserManager<Usuario> userManager, IMapper mapper, JwtHandler jwtHandler)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _jwtHandler = jwtHandler;
         }
 
         [HttpPost("Registration")]
@@ -43,5 +49,42 @@ namespace Server.Controllers
 
             return StatusCode(201);
         }
+
+
+
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
+        {
+            Usuario? user = await _userManager.FindByNameAsync(userForAuthentication.Email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
+
+            var signingCredentials = _jwtHandler.GetSigningCredentials();
+            var claims = _jwtHandler.GetClaims(user);
+            var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+        }
+
+        [HttpGet("GetUserData")]
+        [Authorize]
+        public async Task<IActionResult> GetUserById()
+        {
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userEmail = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("emailaddress")).Value;
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+
+            if(user == null)
+                return BadRequest();
+            FullUser_Output_DTO userDto = _mapper.Map<FullUser_Output_DTO>(user);
+
+            return Ok(userDto);
+        }
+
+
     }
 }

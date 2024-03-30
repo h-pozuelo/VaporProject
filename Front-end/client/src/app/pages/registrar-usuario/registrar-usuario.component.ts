@@ -13,20 +13,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
+import { LoginComponent } from "../login/login.component";
 
 @Component({
-  selector: 'app-registrar-usuario',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatCardModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MensajeErrorComponent,
-  ],
-  templateUrl: './registrar-usuario.component.html',
-  styleUrl: './registrar-usuario.component.css',
+    selector: 'app-registrar-usuario',
+    standalone: true,
+    templateUrl: './registrar-usuario.component.html',
+    styleUrl: './registrar-usuario.component.css',
+    imports: [
+        ReactiveFormsModule,
+        MatCardModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MensajeErrorComponent,
+        LoginComponent
+    ]
 })
 export class RegistrarUsuarioComponent implements OnInit {
   public formulario!: FormGroup;

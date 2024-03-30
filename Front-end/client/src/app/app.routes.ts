@@ -33,6 +33,11 @@ export const routes: Routes = [
         (m) => m.RegistrarUsuarioComponent
       ),
   },
+  { // ruta para el login
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login.component').then((m) => m.LoginComponent),
+  },
   {
     path: '**',
     redirectTo: '/',
