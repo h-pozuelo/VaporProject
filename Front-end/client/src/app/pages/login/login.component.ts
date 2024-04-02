@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 
 
   loginForm: FormGroup = new FormGroup({
-    username: new FormControl(""),
+    email: new FormControl(""),
     password: new FormControl("")
   });
   errorMessage: string = '';
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required]
     })
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit {
     const login = { ...loginFormValue };
 
     const userForAuth: UserForAuthenticationDto = {
-      email: login.username,
+      email: login.email,
       password: login.password
     }
     this.authService.loginUser(userForAuth)

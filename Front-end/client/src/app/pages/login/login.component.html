@@ -15,10 +15,10 @@
                 <div class="row">
                     <div class="col">
                         <mat-form-field class="w-100">
-                            <mat-label>Nombre de Usuario</mat-label>
-                            <input matInput type="text" formControlName="username" />
-                            @if (validateControl('username') && hasError('username', 'required')) {
-                            <mat-error>Nombre de Usuario es <strong>requerido</strong></mat-error>
+                            <mat-label>Email</mat-label>
+                            <input matInput type="text" formControlName="email" />
+                            @if (validateControl('email') && hasError('email', 'required')) {
+                            <mat-error>Email de Usuario es <strong>requerido</strong></mat-error>
                             }
                         </mat-form-field>
                     </div>
