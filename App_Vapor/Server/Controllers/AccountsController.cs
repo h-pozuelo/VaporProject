@@ -56,7 +56,7 @@ namespace Server.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
         {
-            Usuario? user = await _userManager.FindByNameAsync(userForAuthentication.Email);
+            Usuario? user = await _userManager.FindByEmailAsync(userForAuthentication.Email);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
