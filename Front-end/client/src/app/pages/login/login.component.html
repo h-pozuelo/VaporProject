@@ -1,41 +1,49 @@
-<div class="card">
-    <div class="card-body">
-        <h1 class="card-title">Login</h1>
-  
-        @if(showError){
-            <div class="alert alert-danger" role="alert">{{errorMessage}}</div>
-        }
-        
-        
-        <form [formGroup]="loginForm" autocomplete="off" novalidate (ngSubmit)="loginUser(loginForm.value)">
-            <div class="mb-3 row">
-                <label for="username" class="col-form-label col-sm-2">Username:</label>
-                <div class="col-md-5">
-                    <input type="text" id="username" formControlName="username" class="form-control" />
-                </div>
-                <div class="col-md-5">
-                    @if(validateControl('username') && hasError('username', 'required')){
-                        <em class="alert alert-danger">Username is required</em>
-                    }
-                </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="password" class="col-form-label col-sm-2">Password:</label>
-                <div class="col-md-5">
-                    <input type="password" id="password" formControlName="password" class="form-control" />
-                </div>
-                <div class="col-md-5">
-                    @if(validateControl('password') && hasError('password', 'required')){
-                        <em class="alert alert-danger">Password is required</em>
-                    }
-                </div>
-            </div>
-            <br>
-            <div class="mb-3 row">
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-info" [disabled]="!loginForm.valid">Login</button>
-                </div>
-            </div>
-        </form>
+<div class="container container-fluid py-3">
+    @if (errorMessage) {
+    <div class="mb-3">
+        <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
     </div>
-  </div>
+    }
+
+    <form [formGroup]="loginForm" autocomplete="off" novalidate (ngSubmit)="onSubmit()">
+
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Login</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="row">
+                    <div class="col">
+                        <mat-form-field class="w-100">
+                            <mat-label>Nombre de Usuario</mat-label>
+                            <input matInput type="text" formControlName="username" />
+                            @if (validateControl('username') && hasError('username', 'required')) {
+                            <mat-error>Nombre de Usuario es <strong>requerido</strong></mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <mat-form-field class="w-100">
+                            <mat-label>Contraseña</mat-label>
+                            <input matInput type="password" formControlName="password"
+                                [type]="hide ? 'password' : 'text'" />
+                            <button mat-icon-button matSuffix (click)="hide = !hide"
+                                [attr.aria-label]="'Ocultar contraseña'" [attr.aria-pressed]="hide">
+                                <mat-icon>{{
+                                    hide ? "visibility_off" : "visibility"
+                                    }}</mat-icon>
+                            </button>
+                            @if (validateControl('password') && hasError('password', 'required')) {
+                            <mat-error>Contraseña es <strong>requerida</strong></mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+                </div>
+                <mat-card-actions class="px-3 pb-3" align="end">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+    </form>
