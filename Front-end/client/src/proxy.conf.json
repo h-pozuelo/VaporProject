@@ -1,8 +1,0 @@
-{
-  "/steamspy": {
-    "target": "https://steamspy.com/api.php",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  }
-}
