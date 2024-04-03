@@ -44,6 +44,21 @@ namespace Server.Controllers
             return biblioteca;
         }
 
+
+        // GET: api/Bibliotecas/5
+        [HttpGet("GetBibliotecaByUserId/{id}")]
+        public async Task<ActionResult<Biblioteca>> GetBibliotecaByUserId( string id)
+        {
+            var biblioteca = await _context.Bibliotecas.Where(b => b.IdUsuario == id).FirstOrDefaultAsync();
+
+            if (biblioteca == null)
+            {
+                return NotFound();
+            }
+
+            return biblioteca;
+        }
+
         // PUT: api/Bibliotecas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
