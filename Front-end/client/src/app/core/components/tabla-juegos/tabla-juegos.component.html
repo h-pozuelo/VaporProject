@@ -1,0 +1,62 @@
+<mat-card>
+  <mat-card-content>
+    <mat-form-field>
+      <mat-label>Buscar</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Ej. Counter-Strike"
+        #input
+      />
+    </mat-form-field>
+
+    <div class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="full-width-table"
+        matSort
+        aria-label="Juegos"
+      >
+        @for (column of columns; track column) {
+        <ng-container [matColumnDef]="column.columnDef">
+          @if (column.columnDef != "capsule") {
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ column.header }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
+          } @else {
+          <th mat-header-cell *matHeaderCellDef>{{ column.header }}</th>
+          <td mat-cell *matCellDef="let row">
+            <img
+              [src]="column.cell(row)"
+              class="img-fluid"
+              [alt]="column?.name(row)"
+              style="max-width: 184px"
+            />
+          </td>
+          }
+        </ng-container>
+        }
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          (click)="detallesJuego(row.appid)"
+          *matRowDef="let row; columns: displayedColumns"
+        ></tr>
+      </table>
+
+      <mat-paginator
+        #paginator
+        [length]="dataSource.data.length"
+        [pageIndex]="0"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons
+        aria-label="Selecciona una página"
+      >
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
