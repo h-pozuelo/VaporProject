@@ -38,6 +38,8 @@ namespace Server.Controllers
 
             var user = _mapper.Map<Usuario>(userForRegistrationDto);
 
+            user.FechaRegistro = DateTime.Now;
+
             var result = await _userManager.CreateAsync(user, userForRegistrationDto.Password);
 
             if (!result.Succeeded)
