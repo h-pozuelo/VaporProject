@@ -1,4 +1,4 @@
-export interface Biblioteca {
+export interface IBiblioteca {
     iD: number;
     fechaAdicion: string;
     idJuego: number;    

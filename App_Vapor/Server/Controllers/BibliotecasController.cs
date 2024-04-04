@@ -45,13 +45,15 @@ namespace Server.Controllers
         }
 
 
-        // GET: api/Bibliotecas/5
-        [HttpGet("GetBibliotecaByUserId/{id}")]
-        public async Task<ActionResult<Biblioteca>> GetBibliotecaByUserId( string id)
+        // GET: api/Bibliotecas/id
+        [HttpGet("GetBibliotecaByUserId")]
+        public async Task<ActionResult<IEnumerable<Biblioteca>>> GetBibliotecaByUserId(string id)
         {
-            var biblioteca = await _context.Bibliotecas.Where(b => b.IdUsuario == id).FirstOrDefaultAsync();
+            var biblioteca = await _context.Bibliotecas
+                .Where(b => b.IdUsuario == id)
+                .ToListAsync();
 
-            if (biblioteca == null)
+            if (biblioteca == null || biblioteca.Count == 0)
             {
                 return NotFound();
             }
