@@ -56,6 +56,13 @@ export const routes: Routes = [
             (m) => m.CarritoComponent
           ),
       },
+      {
+        path: 'biblioteca',
+        loadComponent: () =>
+          import('./pages/biblioteca/biblioteca.component').then(
+            (m) => m.BibliotecaComponent
+          ),
+      },
     ],
     canActivate: [AuthGuard],
   },

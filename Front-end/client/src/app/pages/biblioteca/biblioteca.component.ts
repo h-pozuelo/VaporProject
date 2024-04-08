@@ -19,6 +19,7 @@ export class BibliotecaComponent implements OnInit {
   public juegoResults$!: Observable<IJuegoResults>;
   public biblioteca!: IBiblioteca[]; 
 errorMessage: any;
+  authSubscription: any;
 
 
   constructor(
@@ -32,48 +33,31 @@ errorMessage: any;
   //guardar la biblioteca en una variable (id)  despues pasamos el id al getBiblioteca
 
   
+  
   // ngOnInit(): void {
   //   this.authService.authChanged.subscribe((isAuthenticated) => {
   //     if (isAuthenticated) {
-  //       this.authService.getUserEmail();
+  //       const user = this.authService.getUserDetails();
+  //       this.getBiblioteca(user.Id).subscribe(biblioteca => {
+  //         this.biblioteca = biblioteca;
+
+  //       });
   //     }
   //   });
-    
-    
   // }
-  
+ 
 
-  
-  // getBiblioteca(id: string): Observable<IBiblioteca[]> {
-  //   return this.bibliotecaService.getBiblioteca(id)
-  //   .pipe(tap((data) => {
-  //     console.log(data);
-  //   }));
-  // }
-
-
-  // this.juegoResults$ = this.bibliotecaService.getBiblioteca()
-  // .pipe(take(1))
-  
-  // getBiblioteca(id: string) {
-  //   this.bibliotecaService.getBiblioteca(id)
-  //     .subscribe((data) => {
-  //       console.log(data);
-  //     });
-  // }
-  
   ngOnInit(): void {
-    this.authService.authChanged.subscribe((isAuthenticated) => {
+    this.authSubscription = this.authService.authChanged.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
+        console.log('Usuario autenticado');
         const user = this.authService.getUserDetails();
         this.getBiblioteca(user.Id).subscribe(biblioteca => {
           this.biblioteca = biblioteca;
-
         });
       }
     });
   }
- 
   
   getBiblioteca(id: string): Observable<IBiblioteca[]> {
     return this.bibliotecaService.getBiblioteca(id)
