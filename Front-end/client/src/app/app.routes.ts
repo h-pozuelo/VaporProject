@@ -9,6 +9,11 @@ export const routes: Routes = [
       import('./pages/home/home.component').then((m) => m.HomeComponent),
   },
   {
+    path: 'biblioteca',
+    loadComponent: () =>
+      import('./pages/biblioteca/biblioteca.component').then((m) => m.BibliotecaComponent),
+  },
+  {
     path: 'lista-juegos',
     children: [
       {

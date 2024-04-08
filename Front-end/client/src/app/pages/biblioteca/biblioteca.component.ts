@@ -65,8 +65,8 @@ errorMessage: any;
   ngOnInit(): void {
     this.authService.authChanged.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        const userId = this.authService.getUserEmail();
-        this.getBiblioteca(userId).subscribe(biblioteca => {
+        const user = this.authService.getUserDetails();
+        this.getBiblioteca(user.Id).subscribe(biblioteca => {
           this.biblioteca = biblioteca;
 
         });
