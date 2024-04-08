@@ -8,6 +8,7 @@ import {
 } from '../../interfaces/user-for-registration-dto';
 import { Observable, Subject } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { UserDetailsDto } from '../../interfaces/user-details-dto';
 
 const URL: string = 'https://localhost:7280';
 
@@ -54,15 +55,19 @@ export class AuthenticationService {
     return token != null && !this.jwtHelper.isTokenExpired(token);
   }
 
-  // Método para obtener del AuthResponseDto el email/nombre de usuario
-  getUserEmail() {
+  // Método para obtener del AuthResponseDto los detalles de usuario
+  getUserDetails() {
     const token = localStorage.getItem('token') as string;
     const decodedToken = this.jwtHelper.decodeToken(token);
-    const email =
-      decodedToken[
-        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email'
-      ];
+    const userDetails: UserDetailsDto = {
+      Id: decodedToken['Id'],
+      FechaRegistro: new Date(Date.parse(decodedToken['FechaRegistro'])),
+      NomApels: decodedToken['NomApels'],
+      Saldo: Number(decodedToken['Saldo']),
+      Username: decodedToken['Username'],
+      Email: decodedToken['Email'],
+    };
 
-    return email;
+    return userDetails;
   }
 }
