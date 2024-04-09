@@ -1,29 +1,30 @@
-<div class="container container-fluid py-3">
 
-  @for(juego of juegosBiblioteca; track juego.appid){
 
-  <mat-card>
-    <div class="image-container">
-      <img mat-card-image [src]="
-        'https://cdn.akamai.steamstatic.com/steam/apps/' +
-        juego.appid +
-        '/header.jpg'
-        " [alt]="juego.name" />
+<div class="container px-lg-5">
+  <div class="row gx-lg-5">
+    @for(juego of juegosBiblioteca; track juego.appid){
+
+    <div class="col-lg-6 col-xxl-4 mb-5">
+      <a href="/lista-juegos/detalles-juego/{{juego.appid}}" style="text-decoration: none; color: inherit;">
+        <div class="border border-2 rounded-3 p-4 h-100">
+          <div class="text-center">
+
+
+            <img mat-card-image class="card-img" [src]="
+          'https://cdn.akamai.steamstatic.com/steam/apps/' +
+          juego.appid +
+          '/header.jpg'
+          " [alt]="juego.name" />
+            <hr>
+            <span>Titulo: {{juego.name}}</span><br>
+            <span>Genero: {{juego.genre}}</span>
+
+          </div>
+        </div>
+      </a>
     </div>
-    <mat-card-content>
-      <mat-list>
-        <mat-list-item>
-          <span matListItemTitle>#</span>
-          <span matListItemLine>{{ juego.appid }}</span>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <mat-list-item>
-          <span matListItemTitle>Juego</span>
-          <span matListItemLine>{{ juego.name }}</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
-
-  }
+    }
+  </div>
 </div>
+
+
