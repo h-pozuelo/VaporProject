@@ -30,6 +30,19 @@ namespace Server.Controllers
             return await _context.Bibliotecas.ToListAsync();
         }
 
+        // ** ¡Aún falta por añadir el verbo personalizado para obtener todos los juegos (bibliotecas) del usuario ! **
+        // ** Verbo para saber si el usuario actual posee (o no) actualmente el juego en cuestión **
+        // GET: api/Bibliotecas/enPropiedad
+        [HttpGet("enPropiedad")]
+        public async Task<ActionResult<bool>> EnPropiedad(int idJuego, string idUsuario)
+        {
+            var enPropiedad = await _context.Bibliotecas
+                .Where(b => b.IdJuego == idJuego && b.IdUsuario == idUsuario)
+                .AnyAsync();
+
+            return enPropiedad;
+        }
+
         // GET: api/Bibliotecas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Biblioteca>> GetBiblioteca(int id)

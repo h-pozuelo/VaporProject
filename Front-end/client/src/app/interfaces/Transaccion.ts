@@ -1,7 +1,6 @@
-
 export interface Transaccion {
-    iD: number;
-    fechaCompra: string;
-    importe: number;
-    idUsuario: string | null;
+  id: number;
+  fechaCompra: Date;
+  importe: number;
+  idUsuario: string;
 }

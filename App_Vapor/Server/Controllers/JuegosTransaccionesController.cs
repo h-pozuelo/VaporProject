@@ -30,6 +30,22 @@ namespace Server.Controllers
             return await _context.JuegosTransacciones.ToListAsync();
         }
 
+        // GET: api/JuegosTransacciones/idTransaccion
+        [HttpGet("idTransaccion")]
+        public async Task<ActionResult<IEnumerable<JuegoTransaccion>>> GetJuegosTransacciones(int idTransaccion)
+        {
+            var juegosTransacciones = await _context.JuegosTransacciones
+                .Where(juegoTransaccion => juegoTransaccion.IdTransaccion == idTransaccion)
+                .ToListAsync();
+
+            if (juegosTransacciones == null || !(juegosTransacciones.Count > 0))
+            {
+                return NotFound();
+            }
+
+            return juegosTransacciones;
+        }
+
         // GET: api/JuegosTransacciones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<JuegoTransaccion>> GetJuegoTransaccion(int id)

@@ -48,7 +48,7 @@
         <mat-list-item>
           <span matListItemTitle>Precio</span>
           <span matListItemLine>{{
-            resultObject.price | price | currency : "USD" : "symbol"
+            resultObject.price | price | currency : "EUR" : "symbol-narrow"
           }}</span>
         </mat-list-item>
 
@@ -79,10 +79,18 @@
     </mat-card-content>
 
     <mat-card-actions class="px-3 pb-3" align="end">
-      @if (indexOfJuego(resultObject.appid) == -1) {
+      @if (enPropiedad$ | async) {
       <button
-        mat-fab
-        extended
+        mat-raised-button
+        type="button"
+        class="ms-2 bg-success text-light"
+        disabled
+      >
+        En propiedad
+      </button>
+      } @else { @if (indexOfJuego(resultObject.appid) == -1) {
+      <button
+        mat-raised-button
         color="primary"
         type="button"
         (click)="addJuego(resultObject)"
@@ -93,8 +101,7 @@
       </button>
       } @else {
       <button
-        mat-fab
-        extended
+        mat-raised-button
         color="warn"
         type="button"
         (click)="removeJuego(resultObject.appid)"
@@ -103,7 +110,7 @@
         <mat-icon>remove_shopping_cart</mat-icon>
         Quitar del Carrito
       </button>
-      }
+      } }
     </mat-card-actions>
   </mat-card>
   } @if (errorMessage) {

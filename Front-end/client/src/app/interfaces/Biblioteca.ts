@@ -1,6 +1,6 @@
 export interface IBiblioteca {
-    iD: number;
-    fechaAdicion: string;
-    idJuego: number;    
-    idUsuario: string | null;
+  id: number;
+  fechaAdicion: Date;
+  idJuego: number;
+  idUsuario: string;
 }

@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
 import { EMPTY, catchError, take } from 'rxjs';
+import { LocalStorageService } from '../../core/services/local-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +49,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private localStorageService: LocalStorageService
   ) {}
 
   ngOnInit(): void {
@@ -97,6 +99,8 @@ export class LoginComponent implements OnInit {
       )
       .subscribe({
         next: (res: AuthResponseDto) => {
+          this.localStorageService.clearCarrito();
+
           console.log('Successful authentication');
           localStorage.setItem('token', res.token);
 

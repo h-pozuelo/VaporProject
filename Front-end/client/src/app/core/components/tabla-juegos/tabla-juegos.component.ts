@@ -51,7 +51,7 @@ export class TablaJuegosComponent implements OnInit, AfterViewInit {
     {
       columnDef: 'price',
       header: 'Precio',
-      cell: (juego: IJuego) => `$${Number(juego.price) / 100}`,
+      cell: (juego: IJuego) => `${Number(juego.price) / 100} €`,
     },
   ];
   public displayedColumns: string[] = this.columns.map((c) => c.columnDef);
@@ -59,11 +59,16 @@ export class TablaJuegosComponent implements OnInit, AfterViewInit {
   @Input() juegos!: IJuegoResults;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @Input() juegosList!: IJuego[];
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource(Object.values(this.juegos));
+    if (!this.juegos) {
+      this.dataSource = new MatTableDataSource(this.juegosList);
+    } else {
+      this.dataSource = new MatTableDataSource(Object.values(this.juegos));
+    }
   }
 
   ngAfterViewInit(): void {

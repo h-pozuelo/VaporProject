@@ -1,0 +1,33 @@
+<div class="container container-fluid py-3">
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  } @if (transacciones$ | async; as resultObject) {
+  <mat-card>
+    <mat-card-content>
+      <mat-accordion>
+        @for (transaccion of resultObject; track transaccion.id) {
+        <mat-expansion-panel (opened)="getJuegosTransaccion(transaccion.id)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ transaccion.fechaCompra | date : "medium" }}
+            </mat-panel-title>
+
+            <mat-panel-description>
+              {{
+                transaccion.importe | price | currency : "EUR" : "symbol-narrow"
+              }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          @if (juegos$ | async; as juegosList) {
+          <app-tabla-juegos [juegosList]="juegosList"></app-tabla-juegos>
+          }
+        </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>

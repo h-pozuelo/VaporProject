@@ -9,11 +9,6 @@ export const routes: Routes = [
       import('./pages/home/home.component').then((m) => m.HomeComponent),
   },
   {
-    path: 'biblioteca',
-    loadComponent: () =>
-      import('./pages/biblioteca/biblioteca.component').then((m) => m.BibliotecaComponent),
-  },
-  {
     path: 'lista-juegos',
     children: [
       {
@@ -57,10 +52,10 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'biblioteca',
+        path: 'transacciones',
         loadComponent: () =>
-          import('./pages/biblioteca/biblioteca.component').then(
-            (m) => m.BibliotecaComponent
+          import('./pages/transacciones/transacciones.component').then(
+            (m) => m.TransaccionesComponent
           ),
       },
     ],
