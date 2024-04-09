@@ -1,12 +1,29 @@
-
-
-<!-- 
 <div class="container container-fluid py-3">
-    @if (biblioteca; as bibliotecaObject) {
-      <app-tabla-juegos [juegos]="bibliotecaObject"></app-tabla-juegos>
-    } @if (errorMessage) {
-      <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
-    }
-  </div> -->
 
-Hola desde la biblioteca
+  @for(juego of juegosBiblioteca; track juego.appid){
+
+  <mat-card>
+    <div class="image-container">
+      <img mat-card-image [src]="
+        'https://cdn.akamai.steamstatic.com/steam/apps/' +
+        juego.appid +
+        '/header.jpg'
+        " [alt]="juego.name" />
+    </div>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <span matListItemTitle>#</span>
+          <span matListItemLine>{{ juego.appid }}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <span matListItemTitle>Juego</span>
+          <span matListItemLine>{{ juego.name }}</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  }
+</div>
