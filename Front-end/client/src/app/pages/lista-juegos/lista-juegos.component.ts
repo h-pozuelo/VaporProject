@@ -5,11 +5,17 @@ import { IJuegoResults } from '../../interfaces/juego';
 import { JuegosService } from '../../core/services/juegos.service';
 import { TablaJuegosComponent } from '../../core/components/tabla-juegos/tabla-juegos.component';
 import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-lista-juegos',
   standalone: true,
-  imports: [AsyncPipe, TablaJuegosComponent, MensajeErrorComponent],
+  imports: [
+    AsyncPipe,
+    TablaJuegosComponent,
+    MensajeErrorComponent,
+    MatCardModule,
+  ],
   templateUrl: './lista-juegos.component.html',
   styleUrl: './lista-juegos.component.css',
 })

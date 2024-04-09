@@ -30,6 +30,23 @@ namespace Server.Controllers
             return await _context.Transacciones.ToListAsync();
         }
 
+        // GET: api/Transacciones/idUsuario
+        [HttpGet("idUsuario")]
+        public async Task<ActionResult<IEnumerable<Transaccion>>> GetTransacciones(string idUsuario)
+        {
+            var transacciones = await _context.Transacciones
+                .Where(transaccion => transaccion.IdUsuario == idUsuario)
+                .OrderByDescending(transaccion => transaccion.FechaCompra)
+                .ToListAsync();
+
+            if (transacciones == null || !(transacciones.Count > 0))
+            {
+                return NotFound();
+            }
+
+            return transacciones;
+        }
+
         // GET: api/Transacciones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Transaccion>> GetTransaccion(int id)

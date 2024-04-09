@@ -16,6 +16,8 @@ import { MatListModule } from '@angular/material/list';
 import { PricePipe } from '../../core/pipes/price.pipe';
 import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensaje-error.component';
 import { LocalStorageService } from '../../core/services/local-storage.service';
+import { BibliotecaService } from '../../core/services/biblioteca.service';
+import { AuthenticationService } from '../../core/services/authentication.service';
 
 @Component({
   selector: 'app-detalles-juego',
@@ -39,13 +41,16 @@ export class DetallesJuegoComponent implements OnInit {
   public appid!: number;
   public juego$!: Observable<IJuego>;
   public errorMessage!: string;
+  public enPropiedad$!: Observable<boolean>;
 
   constructor(
     private juegosService: JuegosService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private localStorageService: LocalStorageService,
-    private location: Location
+    private location: Location,
+    private bibliotecaService: BibliotecaService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -67,6 +72,18 @@ export class DetallesJuegoComponent implements OnInit {
         return EMPTY;
       })
     );
+
+    let idUsuario = this.authService.getUserDetails().Id;
+
+    this.enPropiedad$ = this.bibliotecaService
+      .enPropiedad(this.appid, idUsuario)
+      .pipe(
+        take(1),
+        catchError((error: string) => {
+          this.errorMessage = error;
+          return EMPTY;
+        })
+      );
   }
 
   addJuego(juego: IJuego): void {

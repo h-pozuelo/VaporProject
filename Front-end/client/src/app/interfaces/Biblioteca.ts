@@ -1,6 +1,6 @@
-export interface Biblioteca {
-    iD: number;
-    fechaAdicion: string;
-    idJuego: number;    
-    idUsuario: string | null;
+export interface IBiblioteca {
+  id: number;
+  fechaAdicion: Date;
+  idJuego: number;
+  idUsuario: string;
 }

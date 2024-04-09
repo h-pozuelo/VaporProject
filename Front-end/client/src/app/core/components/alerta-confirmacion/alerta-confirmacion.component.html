@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Cerrar Sesión</h2>
+<mat-dialog-content class="mat-typography">
+  <p>Al cerrar sesión perderas todos los productos agregados al carrito.</p>
+  <p>¿Deseas continuar con la operación?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" [mat-dialog-close]="false">
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">
+    Ok
+  </button>
+</mat-dialog-actions>

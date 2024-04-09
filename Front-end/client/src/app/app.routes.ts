@@ -51,6 +51,13 @@ export const routes: Routes = [
             (m) => m.CarritoComponent
           ),
       },
+      {
+        path: 'transacciones',
+        loadComponent: () =>
+          import('./pages/transacciones/transacciones.component').then(
+            (m) => m.TransaccionesComponent
+          ),
+      },
     ],
     canActivate: [AuthGuard],
   },

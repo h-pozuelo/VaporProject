@@ -5,10 +5,10 @@ import { IJuego } from '../../interfaces/juego';
   providedIn: 'root',
 })
 export class LocalStorageService {
-  public carrito: IJuego[] = [];
+  public carrito!: IJuego[];
 
   constructor() {
-    this.carrito = this.getCarrito();
+    this.getCarrito();
   }
 
   addJuego(juego: IJuego): void {
@@ -19,7 +19,7 @@ export class LocalStorageService {
   }
 
   getCarrito(): IJuego[] {
-    this.carrito = JSON.parse(localStorage.getItem('carrito') ?? '{}');
+    this.carrito = JSON.parse(localStorage.getItem('carrito') ?? '[]');
     if (!this.carrito || !(this.carrito.length > 0)) {
       this.carrito = [];
     }
@@ -38,6 +38,16 @@ export class LocalStorageService {
   }
 
   clearCarrito(): void {
-    localStorage.removeItem('carrito');
+    localStorage.setItem('carrito', '[]');
+  }
+
+  getImporte(): number {
+    let precios: number[] = this.carrito.map((juego) => Number(juego.price));
+    let importe = precios.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    );
+
+    return importe;
   }
 }

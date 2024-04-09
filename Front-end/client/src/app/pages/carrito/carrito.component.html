@@ -1,5 +1,28 @@
 <div class="container container-fluid py-3">
-  @if (juegoResults; as resultObject) {
-  <app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  } @if (juegoResults; as resultObject) {
+  <mat-card>
+    <mat-card-content>
+      <app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
+    </mat-card-content>
+
+    <mat-card-actions class="mt-2 px-3 pb-3">
+      <span class="example-spacer"></span>
+      <button
+        mat-raised-button
+        type="button"
+        (click)="comprar()"
+        [class.bg-success]="!carritoVacio()"
+        [class.text-light]="!carritoVacio()"
+        [disabled]="carritoVacio()"
+      >
+        <mat-icon>payments</mat-icon>
+        Comprar
+      </button>
+    </mat-card-actions>
+  </mat-card>
   }
 </div>

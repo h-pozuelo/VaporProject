@@ -7,10 +7,13 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, take } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthenticationService } from '../../services/authentication.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { AlertaConfirmacionComponent } from '../alerta-confirmacion/alerta-confirmacion.component';
 
 @Component({
   selector: 'app-menu',
@@ -26,6 +29,7 @@ import { AuthenticationService } from '../../services/authentication.service';
     AsyncPipe,
     RouterModule,
     MatMenuModule,
+    MatDialogModule,
   ],
 })
 export class MenuComponent implements OnInit {
@@ -34,7 +38,9 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private localStorageService: LocalStorageService,
+    public dialog: MatDialog
   ) {
     this.authService.authChanged.subscribe((response) => {
       this.isUserAuthenticated = response;
@@ -44,8 +50,23 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {}
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/']);
+    const dialogRef = this.dialog.open(AlertaConfirmacionComponent);
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe({
+        next: (data) => {
+          if (data == true) {
+            this.authService.logout();
+            this.localStorageService.clearCarrito();
+            this.router.navigate(['/']);
+          }
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver
