@@ -18,6 +18,10 @@ import { MensajeErrorComponent } from '../../core/components/mensaje-error/mensa
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { BibliotecaService } from '../../core/services/biblioteca.service';
 import { AuthenticationService } from '../../core/services/authentication.service';
+import { Resenya } from '../../interfaces/Resenya';
+import { ResenyasService } from '../../core/services/resenyas.service';
+import { ResenyaComponent } from '../../core/components/resenya/resenya.component';
+import { FormularioResenyaComponent } from '../../core/components/formulario-resenya/formulario-resenya.component';
 
 @Component({
   selector: 'app-detalles-juego',
@@ -33,6 +37,8 @@ import { AuthenticationService } from '../../core/services/authentication.servic
     PricePipe,
     CurrencyPipe,
     MensajeErrorComponent,
+    ResenyaComponent,
+    FormularioResenyaComponent,
   ],
   templateUrl: './detalles-juego.component.html',
   styleUrl: './detalles-juego.component.css',
@@ -43,6 +49,9 @@ export class DetallesJuegoComponent implements OnInit {
   public errorMessage!: string;
   public enPropiedad$!: Observable<boolean>;
 
+  public resenya!: Resenya;
+  public resenyas$!: Observable<Resenya[]>;
+
   constructor(
     private juegosService: JuegosService,
     private router: Router,
@@ -50,7 +59,8 @@ export class DetallesJuegoComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private location: Location,
     private bibliotecaService: BibliotecaService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private resenyasService: ResenyasService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +83,7 @@ export class DetallesJuegoComponent implements OnInit {
       })
     );
 
-    let idUsuario = this.authService.getUserDetails().Id;
+    let idUsuario = this.authService.getUserDetails().id;
 
     this.enPropiedad$ = this.bibliotecaService
       .enPropiedad(this.appid, idUsuario)
@@ -84,6 +94,8 @@ export class DetallesJuegoComponent implements OnInit {
           return EMPTY;
         })
       );
+
+    this.getResenyasJuego(this.appid);
   }
 
   addJuego(juego: IJuego): void {
@@ -100,5 +112,31 @@ export class DetallesJuegoComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  getResenyasJuego(idJuego: number) {
+    this.resenyas$ = this.resenyasService.getResenyasJuego(idJuego).pipe(
+      take(1),
+      catchError((error: string) => {
+        return EMPTY;
+      })
+    );
+  }
+
+  onResenyaAdded(eventData: Resenya) {
+    this.resenyasService
+      .createResenya(eventData)
+      .pipe(
+        take(1),
+        catchError((error: string) => {
+          this.errorMessage = error;
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.getResenyasJuego(this.appid);
+        },
+      });
   }
 }

@@ -1,8 +1,9 @@
 export interface UserDetailsDto {
-  Id: string;
-  FechaRegistro: Date;
-  NomApels: string;
-  Saldo: number;
-  Username: string;
-  Email: string;
+  id: string;
+  fechaRegistro: Date;
+  nomApels: string;
+  saldo: number;
+  userName: string;
+  email: string;
+  phoneNumber?: string;
 }

@@ -9,4 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './alerta-confirmacion.component.html',
   styleUrl: './alerta-confirmacion.component.css',
 })
-export class AlertaConfirmacionComponent {}
+export class AlertaConfirmacionComponent {
+  public config!: IDialogConfig;
+}
+
+export interface IDialogConfig {
+  titulo: string;
+  descripcion: string;
+  pregunta: string;
+}

@@ -52,6 +52,14 @@ export class MenuComponent implements OnInit {
   logout() {
     const dialogRef = this.dialog.open(AlertaConfirmacionComponent);
 
+    let instance = dialogRef.componentInstance;
+    instance.config = {
+      titulo: 'Cerrar Sesión',
+      descripcion:
+        'Al cerrar sesión perderas todos los productos agregados al carrito.',
+      pregunta: '¿Deseas continuar con la operación?',
+    };
+
     dialogRef
       .afterClosed()
       .pipe(take(1))

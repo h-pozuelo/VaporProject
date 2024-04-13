@@ -45,6 +45,13 @@ export const routes: Routes = [
     path: 'perfil',
     children: [
       {
+        path: '',
+        loadComponent: () =>
+          import('./pages/perfil/perfil.component').then(
+            (m) => m.PerfilComponent
+          ),
+      },
+      {
         path: 'carrito',
         loadComponent: () =>
           import('./pages/carrito/carrito.component').then(

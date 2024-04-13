@@ -1,0 +1,81 @@
+<div class="container container-fluid py-3">
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  } @if (formulario) {
+  <form
+    [formGroup]="formulario"
+    autocomplete="off"
+    novalidate
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title></mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        @for (control of controls; track $index) {
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>{{ controlsLabels[control] }}</mat-label>
+              <input
+                matInput
+                [type]="
+                  control == 'email'
+                    ? 'email'
+                    : control == 'saldo'
+                    ? 'number'
+                    : 'text'
+                "
+                [formControlName]="control"
+                [readonly]="control == 'id' || control == 'fechaRegistro'"
+              />
+              @if (validateControl(control) && hasError(control, 'required')) {
+              <mat-error
+                >{{ controlsLabels[control] }} es
+                <strong>requerido</strong></mat-error
+              >
+              } @if (validateControl(control) && hasError(control, 'email')) {
+              <mat-error
+                >{{ controlsLabels[control] }} no es
+                <strong>válido</strong></mat-error
+              >
+              } @if (validateControl(control) && hasError(control, 'min')) {
+              <mat-error
+                >{{ controlsLabels[control] }} debe ser
+                <strong>igual o superior a 0</strong></mat-error
+              >
+              }
+            </mat-form-field>
+          </div>
+        </div>
+        }
+      </mat-card-content>
+
+      <mat-card-actions align="end" class="px-3 pb-3">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!formulario.valid || !formulario.dirty"
+        >
+          Guardar
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="onReset()"
+          class="ms-2"
+          [disabled]="!formulario.dirty"
+        >
+          Cancelar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+  }
+</div>

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Server.Context;
 using Server.DataTransferObjects;
 using Server.JwtFeatures;
 using Server.Models;
@@ -20,12 +22,14 @@ namespace Server.Controllers
         private readonly UserManager<Usuario> _userManager;
         private readonly IMapper _mapper;
         private readonly JwtHandler _jwtHandler;
+        private readonly ApplicationDbContext _context;
 
-        public AccountsController(UserManager<Usuario> userManager, IMapper mapper, JwtHandler jwtHandler)
+        public AccountsController(UserManager<Usuario> userManager, IMapper mapper, JwtHandler jwtHandler, ApplicationDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper;
             _jwtHandler = jwtHandler;
+            _context = context;
         }
 
         [HttpPost("Registration")]
@@ -109,6 +113,82 @@ namespace Server.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber
             });
+        }
+
+        // GET: api/Accounts/id
+        [HttpGet("id")]
+        public async Task<ActionResult<UserDetailsDto>> GetUsuario(string id)
+        {
+            var usuario = await _context.Users.FindAsync(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<UserDetailsDto>(usuario);
+        }
+
+        // PUT: api/Accounts/id
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("id")]
+        public async Task<IActionResult> PutUsuario(string id, UserDetailsDto userDetailsDto)
+        {
+            if (id != userDetailsDto.Id)
+            {
+                return BadRequest();
+            }
+
+            Usuario mappedUser = _mapper.Map<Usuario>(userDetailsDto);
+
+            List<string> Errors = new List<string>();
+
+            if (await _context.Users.AnyAsync((u) => u.NormalizedUserName == mappedUser.NormalizedUserName
+            && u.Id != mappedUser.Id))
+            {
+                Errors.Add($"Nombre de Usuario '{mappedUser.UserName}' no está disponible.");
+            }
+
+            if (await _context.Users.AnyAsync((u) => u.NormalizedEmail == mappedUser.NormalizedEmail
+            && u.Id != mappedUser.Id))
+            {
+                Errors.Add($"Email '{mappedUser.Email}' no está disponible.");
+            }
+
+            if (Errors.Count > 0)
+            {
+                return BadRequest(new UserDetailsResponseDto { Errors = Errors });
+            }
+
+            var usuario = _context.Users.Find(mappedUser.Id);
+
+            usuario.NomApels = mappedUser.NomApels;
+            usuario.Saldo = mappedUser.Saldo;
+            usuario.UserName = mappedUser.UserName;
+            usuario.NormalizedUserName = mappedUser.NormalizedUserName;
+            usuario.Email = mappedUser.Email;
+            usuario.NormalizedEmail = mappedUser.NormalizedEmail;
+            usuario.PhoneNumber = mappedUser.PhoneNumber;
+
+            _context.Entry(usuario).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (_context.Users.Any(e => e.Id == mappedUser.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
     }
 }

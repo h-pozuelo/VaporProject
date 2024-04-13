@@ -60,12 +60,12 @@ export class AuthenticationService {
     const token = localStorage.getItem('token') as string;
     const decodedToken = this.jwtHelper.decodeToken(token);
     const userDetails: UserDetailsDto = {
-      Id: decodedToken['Id'],
-      FechaRegistro: new Date(Date.parse(decodedToken['FechaRegistro'])),
-      NomApels: decodedToken['NomApels'],
-      Saldo: Number(decodedToken['Saldo']),
-      Username: decodedToken['Username'],
-      Email: decodedToken['Email'],
+      id: decodedToken['Id'],
+      fechaRegistro: new Date(Date.parse(decodedToken['FechaRegistro'])),
+      nomApels: decodedToken['NomApels'],
+      saldo: Number(decodedToken['Saldo']),
+      userName: decodedToken['Username'],
+      email: decodedToken['Email'],
     };
 
     return userDetails;

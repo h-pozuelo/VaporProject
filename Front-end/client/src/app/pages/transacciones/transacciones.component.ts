@@ -45,14 +45,14 @@ export class TransaccionesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let idUsuario = this.authService.getUserDetails().Id;
+    let idUsuario = this.authService.getUserDetails().id;
 
     this.transacciones$ = this.transaccionesService
       .getTransaccionesUsuario(idUsuario)
       .pipe(
         take(1),
         catchError((error: string) => {
-          this.errorMessage = error;
+          this.errorMessage = `Para poder mostrar transacciones primero debes comprar productos.`;
           return EMPTY;
         })
       );

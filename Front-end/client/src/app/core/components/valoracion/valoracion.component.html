@@ -1,0 +1,14 @@
+<div>
+  <rating
+    [max]="5"
+    [(ngModel)]="valoracion"
+    [customTemplate]="tt"
+    [readonly]="isReadonly"
+    (ngModelChange)="updateValoracion()"
+  ></rating>
+  <ng-template #tt let-i="index" let-v="value">
+    <mat-icon class="text-warning">
+      {{ i < v ? "star" : "star_border" }}
+    </mat-icon>
+  </ng-template>
+</div>

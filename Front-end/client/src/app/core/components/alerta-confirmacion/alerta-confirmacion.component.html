@@ -1,7 +1,7 @@
-<h2 mat-dialog-title>Cerrar Sesión</h2>
+<h2 mat-dialog-title>{{ config.titulo }}</h2>
 <mat-dialog-content class="mat-typography">
-  <p>Al cerrar sesión perderas todos los productos agregados al carrito.</p>
-  <p>¿Deseas continuar con la operación?</p>
+  <p>{{ config.descripcion }}</p>
+  <p>{{ config.pregunta }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="warn" [mat-dialog-close]="false">

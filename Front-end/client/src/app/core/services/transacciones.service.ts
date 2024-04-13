@@ -23,4 +23,17 @@ export class TransaccionesService {
       transaccion
     );
   }
+
+  createTransaccionCompleta(
+    transaccion: Transaccion,
+    appidList: number[]
+  ): Observable<Transaccion> {
+    return this.http.post<Transaccion>(
+      `${URL}/api/Transacciones/appidList`,
+      transaccion,
+      {
+        params: new HttpParams().set('appidList', appidList.join(',')),
+      }
+    );
+  }
 }

@@ -30,6 +30,23 @@ namespace Server.Controllers
             return await _context.Resenyas.ToListAsync();
         }
 
+        // GET: api/Resenyas/appid
+        [HttpGet("idJuego")]
+        public async Task<ActionResult<IEnumerable<Resenya>>> GetResenyas(int idJuego)
+        {
+            var resenyas = await _context.Resenyas
+                .Where(resenya => resenya.IdJuego == idJuego)
+                .OrderBy(resenya => resenya.FechaPublicacion)
+                .ToListAsync();
+
+            if (resenyas == null || !(resenyas.Count > 0))
+            {
+                return NotFound();
+            }
+
+            return resenyas;
+        }
+
         // GET: api/Resenyas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Resenya>> GetResenya(int id)

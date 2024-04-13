@@ -10,4 +10,9 @@
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
     }
+
+    public class UserDetailsResponseDto
+    {
+        public IEnumerable<string>? Errors { get; set; }
+    }
 }

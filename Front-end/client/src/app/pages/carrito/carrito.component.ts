@@ -16,6 +16,9 @@ import { Transaccion } from '../../interfaces/Transaccion';
 import { EMPTY, catchError, take } from 'rxjs';
 import { JuegoTransaccion } from '../../interfaces/juego-transaccion';
 import { IBiblioteca } from '../../interfaces/Biblioteca';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UsuariosService } from '../../core/services/usuarios.service';
+import { AlertaConfirmacionComponent } from '../../core/components/alerta-confirmacion/alerta-confirmacion.component';
 
 @Component({
   selector: 'app-carrito',
@@ -26,6 +29,7 @@ import { IBiblioteca } from '../../interfaces/Biblioteca';
     MatButtonModule,
     MatIconModule,
     MensajeErrorComponent,
+    MatDialogModule,
   ],
   templateUrl: './carrito.component.html',
   styleUrl: './carrito.component.css',
@@ -33,6 +37,7 @@ import { IBiblioteca } from '../../interfaces/Biblioteca';
 export class CarritoComponent implements OnInit {
   public juegoResults!: IJuegoResults;
   public errorMessage!: string;
+  public saldo!: number;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -40,11 +45,30 @@ export class CarritoComponent implements OnInit {
     private transaccionesService: TransaccionesService,
     private juegosTransaccionesService: JuegosTransaccionesService,
     private bibliotecaService: BibliotecaService,
-    private router: Router
+    private router: Router,
+    private usuariosService: UsuariosService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.getCarrito();
+
+    let idUsuario: string = this.authService.getUserDetails().id;
+
+    this.usuariosService
+      .getUsuario(idUsuario)
+      .pipe(
+        take(1),
+        catchError((error: string) => {
+          this.errorMessage = error;
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.saldo = data.saldo;
+        },
+      });
   }
 
   getCarrito() {
@@ -56,7 +80,6 @@ export class CarritoComponent implements OnInit {
   }
 
   comprar() {
-    console.log(this.juegoResults);
     this.errorMessage = '';
 
     // Obtenemos los detalles del usuario que actualmente se encuentra autenticado
@@ -68,13 +91,48 @@ export class CarritoComponent implements OnInit {
     // Calculamos el importe total de todos aquellos productos agregados al carrito
     let importe: number = this.localStorageService.getImporte();
 
+    if (this.saldo < importe) {
+      const dialogRef = this.dialog.open(AlertaConfirmacionComponent);
+
+      let instance = dialogRef.componentInstance;
+      instance.config = {
+        titulo: 'Saldo Insuficiente',
+        descripcion:
+          'Tu saldo es insuficiente para poder llevar a cabo la compra.',
+        pregunta: '¿Deseas añadir fondos a tu cuenta?',
+      };
+
+      dialogRef
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe({
+          next: (data) => {
+            if (data == true) {
+              this.router.navigate(['/perfil']);
+            } else {
+              this.errorMessage =
+                'Tu saldo es insuficiente para poder llevar a cabo la compra.';
+            }
+          },
+          error: (error) => {
+            console.log(error);
+          },
+        });
+      return;
+    }
+
     // Creamos una transacción
     let transaccion: Transaccion = {
       id: 0,
       fechaCompra: new Date(),
       importe: importe,
-      idUsuario: userDetails.Id,
+      idUsuario: userDetails.id,
     };
+
+    // Construimos una lista de appid (idJuego)
+    let appidList: number[] = this.localStorageService
+      .getCarrito()
+      .map((juego) => juego.appid);
 
     /**
      * Hacemos una llamada de tipo HTTP-POST al controlador API "Transacciones".
@@ -87,7 +145,7 @@ export class CarritoComponent implements OnInit {
      * por cada uno de los juegos que se encuentren añadidos al carrito.
      */
     this.transaccionesService
-      .createTransaccion(transaccion)
+      .createTransaccionCompleta(transaccion, appidList)
       .pipe(
         take(1),
         catchError((error: string) => {
@@ -97,48 +155,7 @@ export class CarritoComponent implements OnInit {
       )
       .subscribe({
         next: (data: Transaccion) => {
-          this.localStorageService.carrito.forEach((juego) => {
-            let juegoTransaccion: JuegoTransaccion = {
-              id: 0,
-              idJuego: juego.appid,
-              idTransaccion: data.id,
-            };
-
-            // Llamada de tipo HTTP-POST al controlador API "JuegosTransacciones"
-            this.juegosTransaccionesService
-              .createJuegoTransaccion(juegoTransaccion)
-              .pipe(
-                take(1),
-                catchError((error: string) => {
-                  this.errorMessage = error;
-                  return EMPTY;
-                })
-              )
-              .subscribe({
-                next: (response: JuegoTransaccion) => {
-                  let biblioteca: IBiblioteca = {
-                    id: 0,
-                    fechaAdicion: data.fechaCompra,
-                    idJuego: response.idJuego,
-                    idUsuario: data.idUsuario,
-                  };
-
-                  // Llamada de tipo HTTP-POST al controlador API "Bibliotecas"
-                  this.bibliotecaService
-                    .postBiblioteca(biblioteca)
-                    .pipe(
-                      take(1),
-                      catchError((error: string) => {
-                        this.errorMessage = error;
-                        return EMPTY;
-                      })
-                    )
-                    .subscribe({
-                      next: (_) => {},
-                    });
-                },
-              });
-          });
+          console.log('Compra realizada con éxito.');
         },
         complete: () => {
           this.localStorageService.clearCarrito();
