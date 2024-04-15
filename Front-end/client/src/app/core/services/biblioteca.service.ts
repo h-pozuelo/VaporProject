@@ -14,25 +14,26 @@ export class BibliotecaService {
 
   constructor(private http: HttpClient) { }
 
-getBiblioteca(id:string):Observable<IBiblioteca[]>{
-  return this.http.get<IBiblioteca[]>(`${URL}/GetBibliotecaByUserId`, {
-    params: {
-      id: id
-    }
-  });
-}
+  getBiblioteca(id: string): Observable<IBiblioteca[]> {
+    return this.http.get<IBiblioteca[]>(`${URL}/GetBibliotecaByUserId`, {
+      params: {
+        id: id
+      }
+    });
+  }
 
 
-postBiblioteca(biblioteca:IBiblioteca):Observable<IBiblioteca>{
-  return this.http.post<IBiblioteca>(`${URL}`, biblioteca);
-}
+  postBiblioteca(biblioteca: IBiblioteca): Observable<IBiblioteca> {
+    return this.http.post<IBiblioteca>(`${URL}`, biblioteca);
+  }
 
-enPropiedad(idJuego: number, idUsuario: string): Observable<boolean> {
-  return this.http.get<boolean>(`${URL}/enPropiedad`, {
-    params: new HttpParams()
-    .set('idJuego', idJuego)
-    .set('idUsuario', idUsuario),
-  });
-}
+  enPropiedad(idJuego: number, idUsuario: string): Observable<boolean> {
+    return this.http.get<boolean>(`${URL}/enPropiedad`, {
+      params: new HttpParams()
+        .set('idJuego', idJuego)
+        .set('idUsuario', idUsuario),
+    });
+  }
+   
 
 }

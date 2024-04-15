@@ -1,0 +1,11 @@
+<div class="container container-fluid py-3">
+  @if (juegoResults$ | async; as resultObject) {
+  <mat-card>
+    <mat-card-content>
+      <app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
+    </mat-card-content>
+  </mat-card>
+  } @if (errorMessage) {
+  <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  }
+</div>

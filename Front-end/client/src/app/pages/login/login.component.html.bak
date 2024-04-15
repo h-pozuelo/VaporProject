@@ -1,0 +1,87 @@
+<div class="container container-fluid py-3">
+  @if (errorMessage) {
+  <div class="mb-3">
+    <app-mensaje-error [mensajeError]="errorMessage"></app-mensaje-error>
+  </div>
+  }
+
+  <form
+    [formGroup]="loginForm"
+    autocomplete="off"
+    novalidate
+    (ngSubmit)="onSubmit()"
+  >
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="text" formControlName="email" />
+              @if (validateControl('email') && hasError('email', 'required')) {
+              <mat-error
+                >Email de Usuario es <strong>requerido</strong></mat-error
+              >
+              }
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                type="password"
+                formControlName="password"
+                [type]="hide ? 'password' : 'text'"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hide = !hide"
+                [attr.aria-label]="'Ocultar contraseña'"
+                [attr.aria-pressed]="hide"
+              >
+                <mat-icon>{{
+                  hide ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              @if (validateControl('password') && hasError('password',
+              'required')) {
+              <mat-error>Contraseña es <strong>requerida</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-card-actions class="px-3 pb-3" align="end">
+          <p>
+            ¿Necesitas una cuenta?
+            <a routerLink="/registrar-usuario">Registrarse</a>
+          </p>
+          <span class="example-spacer"></span>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!loginForm.valid"
+          >
+            Login
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="onReset()"
+            class="ms-2"
+          >
+            Limpiar
+          </button>
+        </mat-card-actions>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

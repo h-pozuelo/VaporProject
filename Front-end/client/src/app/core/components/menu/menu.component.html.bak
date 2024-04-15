@@ -38,10 +38,6 @@
           <span>Login</span>
         </a>
         } @else {
-        <a mat-menu-item routerLink="/perfil">
-          <mat-icon>person</mat-icon>
-          <span>Perfil</span>
-        </a>
         <a mat-menu-item routerLink="/perfil/carrito">
           <mat-icon>shopping_cart</mat-icon>
           <span>Carrito</span>
