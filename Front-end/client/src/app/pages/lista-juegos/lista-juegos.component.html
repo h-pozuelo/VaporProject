@@ -1,6 +1,9 @@
 <div class="container container-fluid py-3">
   @if (juegoResults$ | async; as resultObject) {
   <mat-card>
+    <mat-card-header>
+      <mat-card-title><h1>Listado de Juegos</h1></mat-card-title>
+    </mat-card-header>
     <mat-card-content>
       <app-tabla-juegos [juegos]="resultObject"></app-tabla-juegos>
     </mat-card-content>
