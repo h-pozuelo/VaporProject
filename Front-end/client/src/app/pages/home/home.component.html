@@ -1,4 +1,32 @@
-<div class="container container-fluid py-3">
-  <p>home works!</p>
+<div class="slider">
+  <div class="slide-track">
+   
+    @for (Imagen of ImagenesUrl; track $index) {
+      <div class="slide">
+        <img [src]="Imagen" alt="image slide" style="display: block; width: 100%;">
+      </div>
+    }
+   
+  </div>
+</div>
  
+<img src="../../../assets/images/img1.jpg" alt="image in the middle" style="display: block; width: 100%;">
+ 
+ 
+<div class="footer-carousel">
+  <div class="slider-reverse">
+    <div class="slide-track">
+     
+      @for (Imagen of ImagenesUrl; track $index) {
+        <div class="slide">
+          <img [src]="Imagen" alt="image slide" style="display: block; width: 100%;">
+        </div>
+      }
+     
+    </div>
+  </div>
+</div>
+ 
+ 
+<div class="container-fluid d-flex flex-column">
 </div>
